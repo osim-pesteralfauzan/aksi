@@ -1,65 +1,21 @@
-const adminUser = "adminaksi";
-const adminPass = "santrikeren123";
+// URL Aplikasi Web Google Apps Script Resmi OSIM Pester Al Fauzan
+const URL_GOOGLE_SHEET = "https://script.google.com/macros/s/AKfycbwtwmuHePfNiLfZA7JkR-GHyZzcv6cxIyPbR9IzyYzvS2SnutlJC7G0YUpSJ-bwj1R37A/exec";
 
-let dataAKSI = JSON.parse(localStorage.getItem('dataAKSI')) || [];
-let dataAnnouncement = JSON.parse(localStorage.getItem('dataAnnouncement')) || [
-    { isi: "Selamat datang di Mading AKSI (Aspirasi & Kreasi Santri)!", tanggal: "2026-06-27" },
-    { isi: "Ayo kirimkan karya terbaikmu di menu KREASI agar dibaca seluruh santri!", tanggal: "2026-06-27" }
-];
-
-// 1. Efek Loading Screen Menghilang
-window.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        const loader = document.getElementById('loading-screen');
-        loader.style.opacity = '0';
-        setTimeout(() => {
-            loader.style.display = 'none';
-            // Tampilkan home screen secara aman
-            document.getElementById('home-screen').style.display = 'block';
-        }, 600);
-    }, 2000); 
-});
-
-// 2. Fungsi Buka Menu (Berfungsi Sempurna!)
-function openMenu(menuName) {
-    // Sembunyikan Home Screen
-    document.getElementById('home-screen').style.display = 'none';
+// Fungsi Navigasi Halaman
+function showPage(pageId) {
+    document.getElementById('home-page').classList.add('hidden');
+    document.getElementById('aspirasi-page').classList.add('hidden');
+    document.getElementById('kreasi-page').classList.add('hidden');
     
-    // Tampilkan Kontainer Utama Halaman Dalam
-    document.getElementById('main-container').style.display = 'block';
-    
-    // Sembunyikan semua konten seksi menu terlebih dahulu
-    document.querySelectorAll('.menu-section').forEach(sec => {
-        sec.style.display = 'none';
-    });
-    
-    // Tampilkan seksi menu yang diklik
-    document.getElementById(`menu-${menuName}`).style.display = 'block';
-
-    // Logika Khusus tiap Menu
-    if (menuName === 'recap') {
-        renderTable('Semua');
-    }
-    if (menuName === 'announcement') {
-        renderMading();
-        startMadingScroll();
-    } else {
-        stopMadingScroll();
-    }
+    document.getElementById(pageId).classList.remove('hidden');
+    window.scrollTo(0, 0);
 }
 
-// 3. Fungsi Kembali ke Home Dashboard
 function goHome() {
-    // Sembunyikan Halaman Dalam
-    document.getElementById('main-container').style.display = 'none';
-    
-    // Munculkan kembali Dashboard Utama
-    document.getElementById('home-screen').style.display = 'block';
-    
-    stopMadingScroll();
+    showPage('home-page');
 }
 
-// 4. Proses Submit Data
+// Fungsi Utama Mengirim Data ke Google Sheets
 function submitData(event, kategori) {
     event.preventDefault();
     const suf = kategori.toLowerCase();
@@ -69,92 +25,37 @@ function submitData(event, kategori) {
     const kelas = document.getElementById(`kelas-${suf}`).value;
     const isi = document.getElementById(`isi-${suf}`).value;
 
-    dataAKSI.push({ kategori, nama, tanggal, kelas, isi });
-    localStorage.setItem('dataAKSI', JSON.stringify(dataAKSI));
+    // Menyiapkan data berbentuk objek JSON sesuai kolom Spreadsheet [cite: 1, 2]
+    const dataKirim = { kategori, nama, tanggal, kelas, isi };
 
-    alert(`Sukses! ${kategori} kamu sudah disalurkan.`);
-    document.getElementById(`form-${suf}`).reset();
-    goHome(); 
-}
+    // Animasi tombol loading agar santri tahu data sedang diproses
+    const btnSubmit = document.querySelector(`.btn-submit-${suf}`);
+    const teksAsli = btnSubmit.innerText;
+    btnSubmit.innerText = "Mengirim ke Database OSIM...";
+    btnSubmit.disabled = true;
 
-// 5. Tampilkan data Recap & Filter
-function renderTable(filter) {
-    const tbody = document.getElementById('recap-rows');
-    tbody.innerHTML = '';
-    let filtered = dataAKSI;
-    if (filter !== 'Semua') filtered = dataAKSI.filter(i => i.kategori === filter);
-
-    filtered.forEach(item => {
-        tbody.innerHTML += `<tr>
-            <td><span style="color:${item.kategori==='Aspirasi'?'#8a2be2':'#ff007f'}"><b>${item.kategori}</b></span></td>
-            <td>${item.nama}</td>
-            <td>${item.tanggal}</td>
-            <td>${item.kelas}</td>
-            <td>${item.isi}</td>
-        </tr>`;
+    // Proses pengiriman data online menggunakan Fetch API
+    fetch(URL_GOOGLE_SHEET, {
+        method: "POST",
+        body: JSON.stringify(dataKirim)
+    })
+    .then(response => response.json())
+    .then(hasil => {
+        if(hasil.result === "success") {
+            alert(`Sukses! ${kategori} kamu sudah berhasil masuk ke database OSIM.`);
+            document.getElementById(`form-${suf}`).reset();
+            goHome();
+        } else {
+            alert("Gagal mengirim data: " + hasil.message);
+        }
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        alert("Terjadi kesalahan jaringan. Pastikan setingan Apps Script sudah diatur ke 'Anyone'.");
+    })
+    .finally(() => {
+        // Mengembalikan tombol ke kondisi semula setelah selesai
+        btnSubmit.innerText = teksAsli;
+        btnSubmit.disabled = false;
     });
 }
-function filterRecap(kat) { renderTable(kat); }
-
-// Export Excel & PDF
-function exportExcel() {
-    const wb = XLSX.utils.table_to_book(document.getElementById('table-recap'), { sheet: "Recap" });
-    XLSX.writeFile(wb, "Recap_AKSI.xlsx");
-}
-function exportPDF() {
-    html2pdf().set({ margin: 10, filename: 'Recap_AKSI.pdf', html2canvas: { scale: 2 } })
-    .from(document.getElementById('table-recap-container')).save();
-}
-
-// 6. Admin Panel Mading
-function loginAdmin() {
-    const u = document.getElementById('admin-user').value;
-    const p = document.getElementById('admin-pass').value;
-    if (u === adminUser && p === adminPass) {
-        document.getElementById('admin-login-box').style.display = 'none';
-        document.getElementById('admin-content').style.display = 'block';
-    } else {
-        alert("Akses Ditolak! Akun Admin Salah.");
-    }
-}
-function logoutAdmin() {
-    document.getElementById('admin-login-box').style.display = 'block';
-    document.getElementById('admin-content').style.display = 'none';
-    document.getElementById('admin-user').value = '';
-    document.getElementById('admin-pass').value = '';
-}
-
-function submitAnnouncement(event) {
-    event.preventDefault();
-    const isi = document.getElementById('isi-announcement').value;
-    const tgl = new Date().toISOString().split('T')[0];
-    dataAnnouncement.unshift({ isi, tanggal: tgl });
-    localStorage.setItem('dataAnnouncement', JSON.stringify(dataAnnouncement));
-    document.getElementById('form-announcement').reset();
-    renderMading();
-}
-
-function renderMading() {
-    const content = document.getElementById('mading-content');
-    content.innerHTML = '';
-    dataAnnouncement.forEach(i => {
-        content.innerHTML += `<div class="mading-item">
-            <p>📌 ${i.isi}</p>
-            <small>📅 ${i.tanggal} | Admin</small>
-        </div>`;
-    });
-}
-
-// Auto Scroll Mading
-let scrollId;
-function startMadingScroll() {
-    const box = document.getElementById('mading-scroll');
-    const wrap = document.getElementById('mading-content');
-    box.scrollTop = 0;
-    clearInterval(scrollId);
-    scrollId = setInterval(() => {
-        if (box.scrollTop + box.clientHeight >= wrap.scrollHeight) box.scrollTop = 0;
-        else box.scrollTop += 1;
-    }, 30);
-}
-function stopMadingScroll() { clearInterval(scrollId); }
