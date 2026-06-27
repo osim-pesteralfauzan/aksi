@@ -1,4 +1,4 @@
-// URL Aplikasi Web Google Apps Script Resmi OSIM Pester Al Fauzan
+// URL Aplikasi Web Google Apps Script Resmi
 const URL_GOOGLE_SHEET = "https://script.google.com/macros/s/AKfycbwtwmuHePfNiLfZA7JkR-GHyZzcv6cxIyPbR9IzyYzvS2SnutlJC7G0YUpSJ-bwj1R37A/exec";
 
 // Fungsi Navigasi Halaman
@@ -15,7 +15,7 @@ function goHome() {
     showPage('home-page');
 }
 
-// Fungsi Utama Mengirim Data ke Google Sheets
+// Fungsi Utama Mengirim Data ke Google Sheets (Anti-Stuck / No-CORS Mode)
 function submitData(event, kategori) {
     event.preventDefault();
     const suf = kategori.toLowerCase();
@@ -25,36 +25,34 @@ function submitData(event, kategori) {
     const kelas = document.getElementById(`kelas-${suf}`).value;
     const isi = document.getElementById(`isi-${suf}`).value;
 
-    // Menyiapkan data berbentuk objek JSON sesuai kolom Spreadsheet [cite: 1, 2]
     const dataKirim = { kategori, nama, tanggal, kelas, isi };
 
-    // Animasi tombol loading agar santri tahu data sedang diproses
+    // Animasi tombol loading
     const btnSubmit = document.querySelector(`.btn-submit-${suf}`);
     const teksAsli = btnSubmit.innerText;
     btnSubmit.innerText = "Mengirim ke Database OSIM...";
     btnSubmit.disabled = true;
 
-    // Proses pengiriman data online menggunakan Fetch API
+    // Trik "no-cors" agar browser tidak memblokir atau membuat web stuck loading lama
     fetch(URL_GOOGLE_SHEET, {
         method: "POST",
+        mode: "no-cors", 
+        headers: {
+            "Content-Type": "application/json"
+        },
         body: JSON.stringify(dataKirim)
     })
-    .then(response => response.json())
-    .then(hasil => {
-        if(hasil.result === "success") {
-            alert(`Sukses! ${kategori} kamu sudah berhasil masuk ke database OSIM.`);
-            document.getElementById(`form-${suf}`).reset();
-            goHome();
-        } else {
-            alert("Gagal mengirim data: " + hasil.message);
-        }
+    .then(() => {
+        // Karena pakai mode no-cors, browser akan langsung menganggap sukses tanpa menunggu balasan Google
+        alert(`Sukses! Data ${kategori} kamu sedang diproses masuk ke database OSIM.`);
+        document.getElementById(`form-${suf}`).reset();
+        goHome();
     })
     .catch(error => {
         console.error("Error:", error);
-        alert("Terjadi kesalahan jaringan. Pastikan setingan Apps Script sudah diatur ke 'Anyone'.");
+        alert("Terjadi kesalahan jaringan.");
     })
     .finally(() => {
-        // Mengembalikan tombol ke kondisi semula setelah selesai
         btnSubmit.innerText = teksAsli;
         btnSubmit.disabled = false;
     });
