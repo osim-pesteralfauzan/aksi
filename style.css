@@ -1,0 +1,311 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;700;800&family=Space+Grotesk:wght@700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+body {
+    background: #f4f7fa; /* Latar belakang cerah, bersih, dan segar */
+    color: #1e293b;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+/* 1. LOADING SCREEN STYLE (Tetap dibikin kontras biar dramatis pas dibuka) */
+#loading-screen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: #ffffff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    transition: opacity 0.6s ease;
+}
+
+.loader-content {
+    text-align: center;
+}
+
+.loader-text {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 50px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    background: linear-gradient(45deg, #ff007f, #7f00ff, #00b4d8);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: pulse 1.5s infinite alternate;
+    margin-bottom: 20px;
+}
+
+.progress-bar {
+    width: 250px;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 10px;
+    margin: 0 auto;
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #ff007f, #00b4d8);
+    animation: fillProgress 2s ease-in-out forwards;
+}
+
+@keyframes pulse {
+    from { transform: scale(0.95); filter: drop-shadow(0 0 10px rgba(0, 180, 216, 0.2)); }
+    to { transform: scale(1.05); filter: drop-shadow(0 0 20px rgba(255, 0, 127, 0.4)); }
+}
+
+@keyframes fillProgress {
+    to { width: 100%; }
+}
+
+/* 2. DASHBOARD UTAMA (HOME) - CERAH & MERIAH */
+.container-home {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 60px 20px;
+    display: none;
+    animation: slideUp 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.container-home.active { display: block; }
+
+.home-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.main-logo {
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 75px;
+    font-weight: 800;
+    background: linear-gradient(45deg, #00b4d8, #ff007f);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 10px rgba(0, 180, 216, 0.2));
+}
+
+.sub-logo {
+    font-size: 18px;
+    color: #64748b;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-top: -5px;
+}
+
+/* Grid 4 Menu Gede */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 25px;
+}
+
+.menu-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    padding: 35px 25px;
+    border-radius: 24px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    color: #1e293b;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.02);
+}
+
+.menu-card:hover {
+    transform: translateY(-12px);
+    color: #ffffff;
+}
+
+.card-icon { font-size: 45px; margin-bottom: 15px; transition: transform 0.3s; }
+.menu-card h3 { font-size: 22px; margin-bottom: 8px; font-weight: 700; }
+.menu-card p { font-size: 13px; color: #64748b; transition: color 0.3s; }
+
+.menu-card:hover p { color: rgba(255, 255, 255, 0.8); }
+
+/* Efek Hover Kartu Menu Warna-Warni Abak Academy */
+.card-aspirasi:hover { background: linear-gradient(135deg, #8a2be2 0%, #4a00e0 100%); box-shadow: 0 15px 30px rgba(138, 43, 226, 0.3); border-color: transparent; }
+.card-kreasi:hover { background: linear-gradient(135deg, #ff007f 0%, #ff7700 100%); box-shadow: 0 15px 30px rgba(255, 0, 127, 0.3); border-color: transparent; }
+.card-recap:hover { background: linear-gradient(135deg, #00b4d8 0%, #0077b6 100%); box-shadow: 0 15px 30px rgba(0, 180, 216, 0.3); border-color: transparent; }
+.card-announcement:hover { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); box-shadow: 0 15px 30px rgba(245, 158, 11, 0.3); border-color: transparent; }
+
+/* 3. HALAMAN ISI FORM / HALAMAN DALAM */
+.container {
+    max-width: 850px;
+    margin: 40px auto;
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 28px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.05);
+    border: 1px solid #e2e8f0;
+}
+
+.container.hidden { display: none; }
+
+/* Tombol Back */
+.btn-back {
+    background: #f1f5f9;
+    color: #475569;
+    padding: 10px 20px;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    margin-bottom: 30px;
+    transition: 0.3s;
+}
+.btn-back:hover { background: #1e293b; color: #ffffff; }
+
+/* Sections */
+.menu-section { display: none; }
+.menu-section.active { display: block; }
+
+h2 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #1e293b;
+    font-weight: 800;
+}
+
+/* Forms */
+.form-group { margin-bottom: 25px; }
+.form-group label { display: block; margin-bottom: 10px; font-weight: 700; color: #475569; }
+.form-group input, .form-group select, .form-group textarea {
+    width: 100%; padding: 15px; border: 2px solid #e2e8f0; border-radius: 14px;
+    font-size: 15px; color: #1e293b; background-color: #f8fafc; transition: 0.3s;
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+    border-color: #00b4d8; outline: none; background-color: #ffffff; box-shadow: 0 0 15px rgba(0,180,216,0.15);
+}
+
+/* Tombol Submit */
+.btn {
+    padding: 16px; border: none; border-radius: 14px; cursor: pointer;
+    font-size: 16px; font-weight: 800; width: 100%; transition: 0.3s; color: white;
+}
+.btn-submit-aspirasi { background: linear-gradient(45deg, #8a2be2, #4a00e0); box-shadow: 0 4px 15px rgba(74, 0, 224, 0.2); }
+.btn-submit-kreasi { background: linear-gradient(45deg, #ff007f, #ff7700); box-shadow: 0 4px 15px rgba(255, 0, 127, 0.2); }
+.btn-submit-announcement, .btn-admin-login { background: linear-gradient(45deg, #f59e0b, #d97706); box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2); }
+.btn:hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+/* Recap Table */
+.recap-actions, .export-actions { display: flex; gap: 12px; margin-bottom: 20px; }
+.btn-opt { flex: 1; padding: 12px; border: 2px solid #e2e8f0; background: #f8fafc; color: #475569; border-radius: 10px; cursor: pointer; font-weight: 700; transition: 0.2s; }
+.btn-opt:hover { border-color: #00b4d8; color: #00b4d8; background: #ffffff; }
+.btn-excel { background: #207245; color: white; }
+.btn-pdf { background: #d62828; color: white; }
+
+#table-recap-container { overflow-x: auto; border-radius: 14px; border: 1px solid #e2e8f0; }
+table { width: 100%; border-collapse: collapse; background: #ffffff; }
+table th { background-color: #1e293b; color: #ffffff; padding: 16px; text-align: left; }
+table td { padding: 16px; border-bottom: 1px solid #edf2f7; color: #334155; }
+table tr:nth-child(even) { background-color: #f8fafc; }
+
+/* Admin & Mading */
+.admin-box { background: #f8fafc; padding: 25px; border-radius: 16px; border: 2px dashed #cbd5e1; margin-bottom: 25px; }
+.admin-box h3 { margin-bottom: 15px; color: #1e293b; }
+.admin-box input { display: block; width: 100%; padding: 12px; margin-bottom: 12px; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 8px; color: #1e293b; }
+.admin-header { display: flex; justify-content: space-between; align-items: center; background: #e0f2fe; padding: 15px; border-radius: 10px; margin-bottom: 20px; color: #0369a1; font-weight: 700; }
+.btn-logout { background: #ef4444; color: white; border: none; padding: 8px 16px; border-radius: 6px; cursor: pointer; font-weight: 700; }
+
+/* Mading Layout Cerah */
+.mading-container {
+    background: #fffdf5; border: 3px solid #f59e0b; height: 350px;
+    overflow: hidden; position: relative; border-radius: 16px; padding: 20px;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.02), 0 4px 20px rgba(245, 158, 11, 0.1);
+}
+.mading-wrapper { position: absolute; width: 95%; }
+.mading-item { background: #ffffff; padding: 20px; margin-bottom: 15px; border-radius: 12px; border-left: 6px solid #f59e0b; box-shadow: 0 4px 10px rgba(0,0,0,0.02); border-top: 1px solid #edf2f7; border-right: 1px solid #edf2f7; border-bottom: 1px solid #edf2f7; }
+.mading-item p { font-size: 15px; line-height: 1.6; color: #334155; font-weight: 500; }
+.mading-item small { color: #94a3b8; display: block; margin-top: 10px; font-weight: 700; }
+
+/* Animations */
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}/* --- Tambahan Desain Atas Kiri & Kanan (Pester Al Fauzan & OSIM) --- */
+
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #ffffff;
+    padding: 15px 25px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+    border: 1px solid #e2e8f0;
+}
+
+.instansi-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.instansi-logo {
+    width: 55px;
+    height: 55px;
+    border-radius: 50px;
+    object-fit: cover;
+    border: 2px solid #00b4d8;
+    box-shadow: 0 2px 8px rgba(0, 180, 216, 0.2);
+}
+
+.instansi-text h4 {
+    font-size: 16px;
+    font-weight: 800;
+    color: #1e293b;
+}
+
+.instansi-text p {
+    font-size: 12px;
+    color: #64748b;
+    margin-top: 2px;
+}
+
+.developer-badge {
+    background: linear-gradient(135deg, #ff007f 0%, #7f00ff 100%);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 700;
+    text-align: right;
+    box-shadow: 0 4px 12px rgba(255, 0, 127, 0.2);
+    letter-spacing: 0.5px;
+}
+
+.dev-sub {
+    display: block;
+    font-size: 10px;
+    font-weight: 500;
+    opacity: 0.9;
+    margin-top: 1px;
+}
+
+/* Responsif untuk layar HP biar ga tabrakan */
+@media (max-width: 768px) {
+    .top-bar {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    .instansi-info {
+        flex-direction: column;
+        gap: 8px;
+    }
+    .developer-badge {
+        text-align: center;
+        width: 100%;
+    }
+}

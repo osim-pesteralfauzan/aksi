@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AKSI - Aspirasi & Kreasi Santri</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+</head>
+<body>
+
+    <div id="loading-screen">
+        <div class="loader-content">
+            <h1 class="loader-text">AKSI KITA!!</h1>
+            <div class="progress-bar"><div class="progress-fill"></div></div>
+        </div>
+    </div>
+
+    <div id="home-screen" class="container-home">
+        
+        <div class="top-bar">
+            <div class="instansi-info">
+                <img src="logo.png.png" alt="Logo Pester Al Fauzan" class="instansi-logo">
+                <div class="instansi-text">
+                    <h4>MTs Pesantren terpadu Al Fauzan Lumajang</h4>
+                    <p>Jln. Letkol Slamet Wardoyo RT 01 RW 01, Labruk Lor, Lumajang</p>
+                </div>
+            </div>
+            <div class="developer-badge">
+                BY: OSIM untuk Santri <span class="dev-sub">
+
+                </span>
+            </div>
+        </div>
+
+        <header class="home-header">
+            <div class="main-logo">AKSI</div>
+            <p class="sub-logo">Aspirasi, Kreasi Santri</p>
+        </header>
+
+        <div class="dashboard-grid">
+            <button class="menu-card card-aspirasi" onclick="openMenu('aspirasi')">
+                <div class="card-icon">💡</div>
+                <h3>Aspirasi</h3>
+                <p>Suarakan saran & pendapatmu</p>
+            </button>
+            <button class="menu-card card-kreasi" onclick="openMenu('kreasi')">
+                <div class="card-icon">🎨</div>
+                <h3>Kreasi</h3>
+                <p>Pamerkan karya terbaikmu</p>
+            </button>
+            <button class="menu-card card-recap" onclick="openMenu('recap')">
+                <div class="card-icon">📊</div>
+                <h3>Recap Data</h3>
+                <p>Lihat & unduh rekam data</p>
+            </button>
+            <button class="menu-card card-announcement" onclick="openMenu('announcement')">
+                <div class="card-icon">📢</div>
+                <h3>Announcement</h3>
+                <p>Mading info penting admin</p>
+            </button>
+        </div>
+    </div>
+
+    <div id="main-container" class="container" style="display: none;">
+        
+        <button class="btn-back" onclick="goHome()">⬅ Kembali ke Home</button>
+        
+        <div id="menu-aspirasi" class="menu-section" style="display: none;">
+            <h2>Suarakan Aspirasimu</h2>
+            <form id="form-aspirasi" onsubmit="submitData(event, 'Aspirasi')">
+                <div class="form-group">
+                    <label>Nama Pelapor</label>
+                    <input type="text" id="nama-aspirasi" required placeholder="Nama lengkap/Hamba Allah">
+                </div>
+                <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="date" id="tgl-aspirasi" required>
+                </div>
+                <div class="form-group">
+                    <label>Kelas</label>
+                    <select id="kelas-aspirasi" required>
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="7A">7A</option><option value="7B">7B</option><option value="7C">7C</option><option value="7D">7D</option><option value="7E">7E</option>
+                        <option value="8A">8A</option><option value="8B">8B</option><option value="8C">8C</option><option value="8D">8D</option><option value="8E">8E</option>
+                        <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option><option value="9D">9D</option><option value="9E">9E</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Kotak Aspirasi</label>
+                    <textarea id="isi-aspirasi" rows="5" placeholder="Tulis aspirasimu di sini..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-submit-aspirasi">Suarakan AKSImu!!</button>
+            </form>
+        </div>
+
+        <div id="menu-kreasi" class="menu-section" style="display: none;">
+            <h2>Bagikan Kreasimu</h2>
+            <form id="form-kreasi" onsubmit="submitData(event, 'Kreasi')">
+                <div class="form-group">
+                    <label>Nama Pelapor</label>
+                    <input type="text" id="nama-kreasi" required placeholder="Nama pembuat kreasi">
+                </div>
+                <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="date" id="tgl-kreasi" required>
+                </div>
+                <div class="form-group">
+                    <label>Kelas</label>
+                    <select id="kelas-kreasi" required>
+                        <option value="">-- Pilih Kelas --</option>
+                        <option value="7A">7A</option><option value="7B">7B</option><option value="7C">7C</option><option value="7D">7D</option><option value="7E">7E</option>
+                        <option value="8A">8A</option><option value="8B">8B</option><option value="8C">8C</option><option value="8D">8D</option><option value="8E">8E</option>
+                        <option value="9A">9A</option><option value="9B">9B</option><option value="9C">9C</option><option value="9D">9D</option><option value="9E">9E</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Kotak Kreasi</label>
+                    <textarea id="isi-kreasi" rows="5" placeholder="Tulis ide atau ceritakan kreasimu di sini..." required></textarea>
+                </div>
+                <button type="submit" class="btn btn-submit-kreasi">Suarakan AKSImu!!</button>
+            </form>
+        </div>
+
+        <div id="menu-recap" class="menu-section" style="display: none;">
+            <h2>Recap Data AKSI</h2>
+            <div class="recap-actions">
+                <button class="btn-opt" onclick="filterRecap('Aspirasi')">Data Aspirasi</button>
+                <button class="btn-opt" onclick="filterRecap('Kreasi')">Data Kreasi</button>
+                <button class="btn-opt" onclick="filterRecap('Semua')">Semua Data</button>
+            </div>
+            <div class="export-actions">
+                <button class="btn-excel" onclick="exportExcel()">Export Excel</button>
+                <button class="btn-pdf" onclick="exportPDF()">Cetak PDF</button>
+            </div>
+
+            <div id="table-recap-container">
+                <table id="table-recap">
+                    <thead>
+                        <tr>
+                            <th>Kategori</th>
+                            <th>Nama</th>
+                            <th>Tanggal</th>
+                            <th>Kelas</th>
+                            <th>Isi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recap-rows">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="menu-announcement" class="menu-section" style="display: none;">
+            <h2>Mading Pengumuman</h2>
+            
+            <div id="admin-login-box" class="admin-box">
+                <h3>Khusus Admin Mading</h3>
+                <input type="text" id="admin-user" placeholder="Username Admin">
+                <input type="password" id="admin-pass" placeholder="Password Admin">
+                <button class="btn btn-admin-login" onclick="loginAdmin()">Masuk Menu Pengumuman</button>
+            </div>
+
+            <div id="admin-content" style="display: none;">
+                <div class="admin-header">
+                    <span>Selamat Datang, Admin!</span>
+                    <button class="btn-logout" onclick="logoutAdmin()">Keluar</button>
+                </div>
+                
+                <form id="form-announcement" onsubmit="submitAnnouncement(event)">
+                    <div class="form-group">
+                        <label>Tulis Pengumuman Baru</label>
+                        <textarea id="isi-announcement" rows="3" placeholder="Info penting hari ini..." required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-submit-announcement">Pasang di Mading</button>
+                </form>
+            </div>
+
+            <div class="mading-container" id="mading-scroll">
+                <div class="mading-wrapper" id="mading-content">
+                    </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
